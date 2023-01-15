@@ -1,0 +1,46 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "BZW",
+	"patterns": [
+		{"include": "#comments"},
+		{"include": "#expression-block"}
+	],
+	"repository": {
+
+		"expression": {
+			"patterns": [{
+				"patterns": [{ "include": "#expression-block" }, {"include": "#property"}, {"include": "#comments"}]
+				}]
+		},
+
+		"expression-block": {
+			"begin": "\\b(arc|base|box|cone|define|group|link|mesh|meshbox|meshpyr|pyramid|sphere|teleporter|tetra|weapon|zone|dynamicColor|textureMatrix|material|physics|world|options|waterLevel)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"name": "expression.group",
+			"patterns": [{ "include": "#expression" }]
+		},
+
+		"property": {
+			"name": "meta.property-name.bzw",
+			"patterns": [{
+				"match": "\\b(position|size|rotation)\\b",
+				"name": "support.type.property-name.box.bzw"
+			}]
+
+		},
+
+		"comments": {
+            "patterns": [{
+                "name": "comment.line.number-sign.bzw",
+                "match": "#.*"
+            }]
+        }
+	},
+	"scopeName": "text.bzw"
+}
