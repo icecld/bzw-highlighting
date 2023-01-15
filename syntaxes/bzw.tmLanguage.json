@@ -159,7 +159,7 @@
 				},
 				{
 					"name": "support.type.property-name.bzw",
-					"match": "(?i)\\b(texture|addtexture|notextures|notexcolor|notexalpha|texmat|dyncol|ambient|color|specular|emission|shininess|resetmat|spheremap|noradar|noculling|nosorting|nolighting|alphathresh|groupalpha|occluder)\\b"
+					"match": "(?i)\\b(texture|addtexture|notextures|notexcolor|notexalpha|texmat|dyncol|ambient|diffuse|color|specular|emission|shininess|resetmat|spheremap|noradar|noculling|nosorting|nolighting|alphathresh|groupalpha|occluder)\\b"
 				}]
 		},
 
@@ -549,7 +549,7 @@
 		"property-basic-common": {
 			"name": "meta.property-name.bzw",
 			"patterns": [{
-				"match": "(?i)\\b(position|size|rotation)\\b",
+				"match": "(?i)\\b(position|pos|size|rotation|rot)\\b",
 				"name": "support.type.property-name.bzw"
 			}]
 		},
