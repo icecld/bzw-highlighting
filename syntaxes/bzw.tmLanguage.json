@@ -3,18 +3,69 @@
 	"name": "BZW",
 	"patterns": [
 		{"include": "#comments"},
-		{"include": "#expression-block"}
+		{ "include": "#config" },
+		{"include": "#object"},
+		{ "include": "#group-definition" }
 	],
 	"repository": {
 
-		"expression": {
-			"patterns": [{
-				"patterns": [{ "include": "#expression-block" }, {"include": "#property"}, {"include": "#comments"}]
-				}]
+		"object": {
+			"name": "meta.object.bzw",
+			"patterns": [
+				{"patterns": [
+					{ "include": "#definition" },
+					{ "include": "#geometry-basic" },
+					{ "include": "#geometry-complex" },
+					{ "include": "#geometry-mesh" },
+					{ "include": "#group-instance" },
+					{"include": "#comments"}]}]
 		},
 
-		"expression-block": {
-			"begin": "\\b(arc|base|box|cone|define|group|link|mesh|meshbox|meshpyr|pyramid|sphere|teleporter|tetra|weapon|zone|dynamicColor|textureMatrix|material|physics|world|options|waterLevel)\\b",
+		"config": {
+			"name": "object.group",
+			"patterns": [
+				{"include": "#config-options"},
+				{"include": "#config-world"},
+				{"include": "#config-waterLevel"}
+			]
+		},
+
+		"definition": {
+			"name": "object.group",
+			"patterns": [
+				{"include": "#definition-dynamicColor"},
+				{"include": "#definition-textureMatrix"},
+				{"include": "#definition-material"},
+				{"include": "#definition-physics"},
+				{"include": "#definition-weapon"},
+				{"include": "#definition-link"}
+			]
+		},
+
+		"geometry-basic": {
+			"name": "object.group",
+			"patterns": [
+				{"include": "#geometry-basic-box"},
+				{"include": "#geometry-basic-pyramid"},
+				{"include": "#geometry-basic-base"},
+				{"include": "#geometry-basic-teleporter"},
+				{"include": "#geometry-basic-zone"},
+				{"include": "#geometry-basic-meshpyr"}
+			]
+		},
+
+		"geometry-complex": {
+			"name": "object.group",
+			"patterns": [
+				{"include": "#geometry-basic-meshbox"},
+				{"include": "#geometry-basic-arc"},
+				{"include": "#geometry-basic-cone"},
+				{"include": "#geometry-basic-sphere"}
+			]
+		},
+
+		"config-options": {
+			"begin": "\\b(options)\\b",
 			"end": "\\b(end)\\b",
 			"beginCaptures": {
 			  "0": { "name": "keyword.control.bzw" }
@@ -22,17 +73,493 @@
 			"endCaptures": {
 			  "0": { "name": "keyword.control.bzw" }
 			},
-			"name": "expression.group",
-			"patterns": [{ "include": "#expression" }]
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#server-variables"},
+				{"include": "#bzfs-flags"}
+			]
 		},
 
-		"property": {
+		"config-world": {
+			"begin": "(?i)\\b(world)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name|size|flagHeight|noWalls|freeCtfSpawns)\\b"
+				}]
+		},
+
+		"config-waterLevel": {
+			"begin": "\\b(waterLevel)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name|height)\\b"
+				}]
+		},
+
+
+		"definition-dynamicColor": {
+			"begin": "(?i)\\b(dynamicColor)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name)\\b"
+				},
+				{
+					"match": "(red|green|blue|alpha) (limits|sinusoid|clampUp|clampDown|sequence)",
+					"captures": {
+						"1": {"name": "support.type.property-name.bzw"},
+						"2": {"name": "support.type.property-name.bzw"}
+					}
+				}]
+		},
+
+		"definition-material": {
+			"begin": "(?i)\\b(material)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"match": "(name|NAME) (Ground|WaterMaterial|LinkMaterial|LeftSkyboxMaterial|RightSkyboxMaterial|FrontSkyboxMaterial|BackSkyboxMaterial|TopSkyboxMaterial|BottomSkyboxMaterial)?",
+					"captures": {
+						"1": {"name": "support.type.property-name.bzw"},
+						"2": {"name": "constant.language.magic-value.bzw"}
+					}
+				},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(texture|addtexture|notextures|notexcolor|notexalpha|texmat|dyncol|ambient|color|specular|emission|shininess|resetmat|spheremap|noradar|noculling|nosorting|nolighting|alphathresh|groupalpha|occluder)\\b"
+				}]
+		},
+
+		"definition-textureMatrix": {
+			"begin": "(?i)\\b(textureMatrix)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name)\\b"
+				},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(scale|spin|shift|center|fixedscale|fixedspin|fixedshift)\\b"
+				}]
+		},
+
+		"definition-physics": {
+			"begin": "(?i)\\b(physics)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name)\\b"
+				},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(linear|angular|slide|death)\\b"
+				}]
+		},
+
+		"definition-link": {
+			"begin": "(?i)\\b(link)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name)\\b"
+				},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(from|to)\\b"
+				}]
+		},
+
+		"geometry-basic-box": {
+			"begin": "(?i)\\b(box)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(texsize|texoffset|phydrv|matref|top matref|sides matref|outside matref|bottom matref|x+ matref|x- matref|y+ matref|y-  matref|z+  matref)\\b"
+				}]
+		},
+
+		"geometry-basic-pyramid": {
+			"begin": "(?i)\\b(pyramid|pyr)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(phydrv|drivethrough|shootthrough|matref|bottom matref)\\b"
+				}]
+		},
+
+		"geometry-basic-meshpyr": {
+			"begin": "(?i)\\b(meshpyr)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name|phydrv|matref)\\b"
+				}]
+		},
+
+		"geometry-basic-base": {
+			"begin": "(?i)\\b(base)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(color|oncap)\\b"
+				}]
+		},
+
+		"geometry-basic-teleporter": {
+			"begin": "(?i)\\b(teleporter)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(border)\\b"
+				}]
+		},
+
+		"geometry-basic-zone": {
+			"begin": "(?i)\\b(zone)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(name|zoneflag|flag|team|safety|oncap)\\b"
+				}]
+		},
+
+		"geometry-complex-meshbox": {
+			"begin": "(?i)\\b(meshbox)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(obstacle|phydrv|matref|top matref|sides matref|outside matref|bottom matref)\\b"
+				}]
+		},
+
+		"geometry-complex-arc": {
+			"begin": "(?i)\\b(arc)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(divisions|flatshading|angle|ratio|texsize|phydrv|smoothbounce|matref|top matref|bottom matref|inside matref|outside matref|startside matref|endside matref)\\b"
+				}]
+		},
+
+		"geometry-complex-cone": {
+			"begin": "(?i)\\b(cone)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(divisions|flatshading|phydrv|smoothbounce|matref|bottom matref)\\b"
+				}]
+		},
+
+		"geometry-complex-sphere": {
+			"begin": "(?i)\\b(sphere)\\b",
+			"end": "(?i)\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(divisions|flatshading|hemisphere|radius|phydrv|smoothbounce|matref)\\b"
+				}]
+		},
+
+		"geometry-mesh": {
+			"begin": "\\b(mesh)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "\\b(vertex|normal|texcoord|inside|phydrv|smoothbounce|noclusters|drivethrough|shootthrough|passable|matref)\\b"
+				},
+				{"include": "#geometry-mesh-face"},
+				{"include": "#geometry-mesh-drawinfo"}
+			]
+		},
+
+		"geometry-mesh-face": {
+			"begin": "\\b(face)\\b",
+			"end": "\\b(endface)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "\\b(vertices|normals|texcoords|phydrv|smoothbounce|noclusters|drivethrough|shootthrough|passable|matref)\\b"
+				}
+			]
+		},
+
+		"geometry-mesh-drawinfo": {
+			"begin": "\\b(drawInfo)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "\\b(dlist|decorative|angvel|extents|sphere|corner|vertex|normal|texcoord)\\b"
+				},
+				{"include": "#geometry-mesh-drawinfo-lod"}
+			]
+		},
+
+		"geometry-mesh-drawinfo-lod": {
+			"begin": "\\b(lod)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "\\b(lengthPerPixel)\\b"
+				},
+				{"include": "#geometry-mesh-drawinfo-lod-matref"}
+			]
+		},
+
+		"geometry-mesh-drawinfo-lod-matref": {
+			"begin": "\\b(matref)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "\\b(dlist|sphere|points|lines|lineloop|linestrip|tris|tristrip|trifan|quads|quadstrip|polygon)\\b"
+				}]
+		},
+
+		"group-definition": {
+			"begin": "\\b(define) ([a-zA-Z0-9_-][a-zA-Z0-9_-]*)\\b",
+			"end": "\\b(enddef)\\b",
+			"beginCaptures": {
+			  "1": { "name": "keyword.control.bzw" },
+			  "2": { "name": "storage.other.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [{ "include": "#object" }]
+		},
+
+
+		"group-instance": {
+			"begin": "\\b(group) ([a-zA-Z0-9_-][a-zA-Z0-9_-]*)\\b",
+			"end": "\\b(end)\\b",
+			"beginCaptures": {
+			  "1": { "name": "keyword.control.bzw" },
+			  "2": { "name": "storage.other.bzw" }
+			},
+			"endCaptures": {
+			  "0": { "name": "keyword.control.bzw" }
+			},
+			"patterns": [
+				{"include": "#comments"},
+				{"include": "#property-basic-common"},
+				{"include": "#property-complex-common"},
+				{
+					"name": "support.type.property-name.bzw",
+					"match": "(?i)\\b(team|tint|drivethrough|shootthrough|phydrv|matref)\\b"
+				}]
+		},
+
+		"property-basic-common": {
 			"name": "meta.property-name.bzw",
 			"patterns": [{
-				"match": "\\b(position|size|rotation)\\b",
-				"name": "support.type.property-name.box.bzw"
+				"match": "(?i)\\b(position|size|rotation)\\b",
+				"name": "support.type.property-name.bzw"
 			}]
+		},
 
+		"property-complex-common": {
+			"name": "meta.property-name.bzw",
+			"patterns": [{
+				"match": "(?i)\\b(name|shift|shear|scale|spin)\\b",
+				"name": "support.type.property-name.bzw"
+			}]
 		},
 
 		"comments": {
@@ -40,7 +567,36 @@
                 "name": "comment.line.number-sign.bzw",
                 "match": "#.*"
             }]
-        }
+        },
+
+		"server-variables": {
+			"patterns": [
+				{
+					"match": "(-set) ?(_agilityAdVel|_agilityTimeWindow|_agilityVelDelta|_ambientLight|_angleTolerance|_angularAd|_avenueSize|_baseSize|_boxBase|_boxHeight|_burrowDepth|_burrowSpeedAd|_burrowAngularAd|_coldetDepth|_coldetElements|_countdownResumeTime|_countdownResumeDelay|_cullDepth|_cullDist|_cullElements|_cullOccluders|_disableBots|_disableSpeedChecks|_disableHeightChecks|_drawCelestial|_drawClouds|_drawGround|_drawGroundLights|_drawMountains|_drawSky|_enableDistanceCheck|_endShotDetection|_explodeTime|_flagAltitude|_flagEffectTime|_flagHeight|_flagPoleWidth|_flagPoleSize|_flagRadius|_fogMode|_fogDensity|_fogNoSky|_fogStart|_fogEnd|_fogColor|_forbidHunting|_forbidIdentify|_forbidMarkers|_friction|_gmActivationTime|_gmAdLife|_gmSize|_gmTurnAngle|_gravity|_handicapScoreDiff|_handicapVelAd|_handicapAngAd|_handicapShotAd|_hideFlagsOnRadar|_hideTeamFlagsOnRadar|_identifyRange|_inertiaAngular|_inertiaLinear|_jumpVelocity|_laserAdVel|_laserAdRate|_laserAdLife|_latitude|_lgGravity|_lockOnAngle|_longitude|_lRAdRate|_maxBumpHeight|_maxFlagGrabs|_maxLOD|_mirror|_momentumLinAcc|_momentumAngAcc|_momentumFriction|_mGunAdVel|_mGunAdRate|_mGunAdLife|_muzzleFront|_muzzleHeight|_noClimb|_noShadows|_noSmallPackets|_notRespondingTime|_obeseFactor|_pauseDropTime|_positionTolerance|_pyrBase|_pyrHeight|_radarLimit|_rainBaseColor|_rainDensity|_rainEndZ|_rainMaxPuddleTime|_rainPuddleSpeed|_rainPuddleColor|_rainPuddleTexture|_rainRoofs|_rainSpread|_rainSpeed|_rainSpeedMod|_rainSpins|_rainStartZ|_rainTexture|_rainTopColor|_rainType|_rejoinTime|_rejumpTime|_reloadTime|_rFireAdVel|_rFireAdRate|_rFireAdLife|_shieldFlight|_shockAdLife|_shockInRadius|_shockOutRadius|_shotRadius|_shotRange|_shotSpeed|_shotTailLength|_shotsKeepVerticalVelocity|_skyColor|_spawnMaxCompTime|_spawnSafeRadMod|_spawnSafeSRMod|_spawnSafeSWMod|_speedChecksLogOnly|_srRadiusMult|_squishFactor|_squishTime|_syncTime|_syncLocation|_tankAngVel|_tankExplosionSize|_tankHeight|_tankLength|_tankRadius|_tankSpeed|_tankWidth|_targetingAngle|_teleportBreadth|_teleportHeight|_teleportTime|_teleportWidth|_thiefAdLife|_thiefAdRate|_thiefAdShotVel|_thiefTinyFactor|_thiefVelAd|_thiefDropTime|_tinyFactor|_trackFade|_updateThrottleRate|_useLineRain|_useRainPuddles|_useRainBillboards|_velocityAd|_wallHeight|_weapons|_wideAngleAng|_wingsGravity|_wingsJumpCount|_wingsJumpVelocity|_wingsSlideTime|_worldSize)?\\b",
+					"captures": {
+						"1": {"name": "support.type.property-name.bzw"},
+						"2": {"name": "storage.other.bzw"}
+					}
+				}			
+			]
+		},
+
+		"bzfs-flags": {
+			"patterns": [
+				{
+					"match": "(-a|-admsg|-adminlagannounce|-advertise|-autoTeam|-b|-badwords|-ban|-banfile|-banTime|-c|-cache|-cacheout|-conf|-cr|-d|-density|-disableBots|-fb|-filterCallsigns|-filterChat|-filterSimple|-g|-groupdb|-h|-handicap|-help|-helpmsg|-i|-j|-jitterdrop|-jitterwarn|-lagannounce|-lagdrop|-lagwarn|-loadplugin|-masterBanURL|-maxidle|-mp|-mps|-ms|-mts|-noMasterBanlist|-noTeamKills|-offa|-p|-packetlossdrop|-packetlosswarn|-passdb|-passwd|-pidfile|-poll|-printscore|-publictitle|-publicaddr|-publiclist|-publickey|-q|\\+r|-rabbit|-recbuf|-recbufonly|-recdir|-replay|-reportfile|-reportpipe|-requireudp|\\+s|-s|-sa|-sb|-set|-sl|-spamtime|-spamwarn|-speedtol|-srvmsg|-st|-sw|-synclocation|-synctime|-t|-time|-timemanual|-tk|-tkannounce|-tkkr|-ts|-userdb|-utc|-vars|-version|-vetoTime|-votePercentage|-voteRepeatTime|-world|-worldsize)\\b",
+					"name": "support.type.property-name.bzw"
+				},
+				{
+					"match": "(\\+f|-f) ?(A|BU|CL|G|GM|V|ID|IB|JP|L|MG|MQ|N|OO|PZ|QT|F|R|SE|SH|SW|ST|SR|SB|TH|T|US|WG|B|BY|CB|FO|JM|LT|M|NJ|O|RC|RO|RT|TR|WA|GOOD|BAD|good|bad|0|1|2|3|4)?\\b",
+					"captures": {
+						"1": {"name": "support.type.property-name.bzw"},
+						"2": {"name": "storage.other.bzw"}
+					}
+				}
+			]
+		}
+
 	},
 	"scopeName": "text.bzw"
 }
