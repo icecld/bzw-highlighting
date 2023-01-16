@@ -57,10 +57,10 @@
 		"geometry-complex": {
 			"name": "object.group",
 			"patterns": [
-				{"include": "#geometry-basic-meshbox"},
-				{"include": "#geometry-basic-arc"},
-				{"include": "#geometry-basic-cone"},
-				{"include": "#geometry-basic-sphere"}
+				{"include": "#geometry-complex-meshbox"},
+				{"include": "#geometry-complex-arc"},
+				{"include": "#geometry-complex-cone"},
+				{"include": "#geometry-complex-sphere"}
 			]
 		},
 

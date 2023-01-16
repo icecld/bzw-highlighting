@@ -3,7 +3,7 @@
   "displayName": "bzw-highlighting",
   "description": "Syntax highlighting for the BZFlag BZW world language",
   "publisher": "George Bratley",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/icecld/bzw-highlighting"
